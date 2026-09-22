@@ -9,7 +9,12 @@
 
 ## 🚀 Live Demo
 
-[Visit Live Application](https://your-deployment-url.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Now-brightgreen?style=for-the-badge)](https://krishi-drishti-sih2026.vercel.app)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/raunitsharan/krishi-drishti-sih2026)
+
+**Live Application:** https://krishi-drishti-sih2026.vercel.app
+
+**GitHub Repository:** https://github.com/raunitsharan/krishi-drishti-sih2026
 
 ## 📋 Overview
 
