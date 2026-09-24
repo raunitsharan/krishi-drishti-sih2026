@@ -10,7 +10,7 @@
 
 import React, { useRef, useMemo, useEffect, useState, useCallback } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, Sky } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 
 export interface ThreatData {
@@ -89,7 +89,7 @@ function Field({ weather }: { weather: string }) {
     weather === 'drought' ? '#7a5c2a' :
     weather === 'flood'   ? '#1a5c3a' : '#2d5016'
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+    <mesh rotation={[-Math.PI / 2, 0, 0]}>
       <planeGeometry args={[60, 60]} />
       <meshStandardMaterial color={color} roughness={0.9} />
     </mesh>
@@ -702,12 +702,12 @@ function Scene({
     reg({ id: 'field', text: 'Crop Field 2.5 Acres', color: '#88ff88', bg: 'rgba(0,55,0,0.75)', worldPos: new THREE.Vector3(0, 0.3, -22) })
   }, [reg])
 
-  const sunPos: [number, number, number] =
-    weather === 'drought' || weather === 'heatwave' ? [20, 25, 20] : [100, 20, 100]
-
   return (
     <>
-      <Sky sunPosition={sunPos} turbidity={weather === 'flood' ? 14 : 6} rayleigh={weather === 'flood' ? 3 : 1} />
+      <color attach="background" args={[
+        weather === 'drought' || weather === 'heatwave' ? '#ff9944' :
+        weather === 'flood' ? '#445566' : '#87CEEB'
+      ]} />
       <ambientLight
         intensity={weather === 'drought' || weather === 'heatwave' ? 0.85 : 0.5}
         color={weather === 'drought' || weather === 'heatwave' ? '#ffe090' : '#ffffff'}
