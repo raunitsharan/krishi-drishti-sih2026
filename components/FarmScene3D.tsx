@@ -111,7 +111,7 @@ function CropRows({ weather }: { weather: string }) {
   return (
     <>
       {items.map(([x, z]) => (
-        <mesh key={`${x}_${z}`} position={[x, 0.5, z]}>
+        <mesh key={`${x}_${z}`} position={[x, 0.5, z]} castShadow>
           <coneGeometry args={[0.28, 1.1, 6]} />
           <meshStandardMaterial color={color} roughness={0.8} />
         </mesh>
@@ -138,7 +138,7 @@ function Fence() {
   return (
     <>
       {posts.map((p, i) => (
-        <mesh key={i} position={p}>
+        <mesh key={i} position={p} castShadow>
           <boxGeometry args={[0.15, 1.4, 0.15]} />
           <meshStandardMaterial color="#5c3d1e" />
         </mesh>
@@ -155,7 +155,7 @@ function ControlRoom({ reg }: { reg: (l: LabelInfo) => void }) {
   }, [reg, wp])
   return (
     <group position={[-20, 0, -20]}>
-      <mesh position={[0, 1.5, 0]}>
+      <mesh position={[0, 1.5, 0]} castShadow>
         <boxGeometry args={[4, 3, 4]} />
         <meshStandardMaterial color="#e8d5b0" />
       </mesh>
@@ -183,7 +183,7 @@ function WaterTank({ reg }: { reg: (l: LabelInfo) => void }) {
   }, [reg, wp])
   return (
     <group position={[20, 0, -20]}>
-      <mesh position={[0, 2, 0]}>
+      <mesh position={[0, 2, 0]} castShadow>
         <cylinderGeometry args={[1.5, 1.5, 4, 16]} />
         <meshStandardMaterial color="#1565c0" metalness={0.6} roughness={0.3} />
       </mesh>
@@ -222,11 +222,11 @@ function CameraUnit({ position, active, lid, lt, reg }: {
 
   return (
     <group position={position}>
-      <mesh position={[0, 2, 0]}>
+      <mesh position={[0, 2, 0]} castShadow>
         <cylinderGeometry args={[0.08, 0.1, 4, 8]} />
         <meshStandardMaterial color="#555" />
       </mesh>
-      <mesh position={[0, 4.2, 0]}>
+      <mesh position={[0, 4.2, 0]} castShadow>
         <boxGeometry args={[0.5, 0.3, 0.4]} />
         <meshStandardMaterial color="#111" />
       </mesh>
@@ -238,7 +238,7 @@ function CameraUnit({ position, active, lid, lt, reg }: {
           emissiveIntensity={0}
         />
       </mesh>
-      <mesh position={[0, 5, 0]} rotation={[-Math.PI / 6, 0, 0]}>
+      <mesh position={[0, 5, 0]} rotation={[-Math.PI / 6, 0, 0]} castShadow>
         <boxGeometry args={[1, 0.04, 0.7]} />
         <meshStandardMaterial color="#1a237e" metalness={0.9} roughness={0.1} />
       </mesh>
@@ -260,11 +260,11 @@ function SensorUnit({ position, lid, lt, reg }: {
   }, [lid, lt, reg, wp])
   return (
     <group position={position}>
-      <mesh position={[0, 1.5, 0]}>
+      <mesh position={[0, 1.5, 0]} castShadow>
         <cylinderGeometry args={[0.07, 0.07, 3, 8]} />
         <meshStandardMaterial color="#666" />
       </mesh>
-      <mesh position={[0, 3.2, 0]}>
+      <mesh position={[0, 3.2, 0]} castShadow>
         <boxGeometry args={[0.4, 0.55, 0.28]} />
         <meshStandardMaterial color="#ff6600" />
       </mesh>
@@ -295,7 +295,7 @@ function IrrigationUnit({ position, active, lid, lt, reg }: {
 
   return (
     <group position={position}>
-      <mesh>
+      <mesh castShadow>
         <cylinderGeometry args={[0.18, 0.14, 0.45, 12]} />
         <meshStandardMaterial color="#2196f3" metalness={0.4} />
       </mesh>
@@ -351,7 +351,7 @@ function Speaker({ position, active, lid, reg }: {
 
   return (
     <group position={position}>
-      <mesh ref={mRef}>
+      <mesh ref={mRef} castShadow>
         <coneGeometry args={[0.3, 0.5, 8]} />
         <meshStandardMaterial
           color={active ? '#ff6600' : '#444'}
@@ -438,16 +438,16 @@ function Elephant({ position, visible, reg }: {
   const g = '#808080', dk = '#606060'
   return (
     <group ref={gRef} visible={false}>
-      <mesh position={[0, 1.4, 0]}><sphereGeometry args={[1.3, 10, 8]} /><meshStandardMaterial color={g} roughness={0.9} /></mesh>
-      <mesh position={[1.2, 1.9, 0]}><sphereGeometry args={[0.75, 10, 8]} /><meshStandardMaterial color={g} roughness={0.9} /></mesh>
-      <mesh position={[2.0, 1.3, 0]} rotation={[0, 0, -Math.PI / 3]}><cylinderGeometry args={[0.18, 0.1, 1.4, 8]} /><meshStandardMaterial color={dk} /></mesh>
-      <mesh position={[1.1, 2.1,  0.7]}><sphereGeometry args={[0.5, 8, 6]} /><meshStandardMaterial color={dk} /></mesh>
-      <mesh position={[1.1, 2.1, -0.7]}><sphereGeometry args={[0.5, 8, 6]} /><meshStandardMaterial color={dk} /></mesh>
-      <mesh position={[1.85, 1.45, 0.25]} rotation={[0, 0, -Math.PI / 5]}><cylinderGeometry args={[0.07, 0.02, 0.9, 6]} /><meshStandardMaterial color="#fff8e1" /></mesh>
-      <mesh ref={lFL} position={[ 0.6, 0.45,  0.55]}><cylinderGeometry args={[0.25, 0.2, 1.0, 8]} /><meshStandardMaterial color={g} /></mesh>
-      <mesh ref={lFR} position={[ 0.6, 0.45, -0.55]}><cylinderGeometry args={[0.25, 0.2, 1.0, 8]} /><meshStandardMaterial color={g} /></mesh>
-      <mesh ref={lBL} position={[-0.6, 0.45,  0.55]}><cylinderGeometry args={[0.25, 0.2, 1.0, 8]} /><meshStandardMaterial color={g} /></mesh>
-      <mesh ref={lBR} position={[-0.6, 0.45, -0.55]}><cylinderGeometry args={[0.25, 0.2, 1.0, 8]} /><meshStandardMaterial color={g} /></mesh>
+      <mesh position={[0, 1.4, 0]} castShadow><sphereGeometry args={[1.3, 10, 8]} /><meshStandardMaterial color={g} roughness={0.9} /></mesh>
+      <mesh position={[1.2, 1.9, 0]} castShadow><sphereGeometry args={[0.75, 10, 8]} /><meshStandardMaterial color={g} roughness={0.9} /></mesh>
+      <mesh position={[2.0, 1.3, 0]} rotation={[0, 0, -Math.PI / 3]} castShadow><cylinderGeometry args={[0.18, 0.1, 1.4, 8]} /><meshStandardMaterial color={dk} /></mesh>
+      <mesh position={[1.1, 2.1,  0.7]} castShadow><sphereGeometry args={[0.5, 8, 6]} /><meshStandardMaterial color={dk} /></mesh>
+      <mesh position={[1.1, 2.1, -0.7]} castShadow><sphereGeometry args={[0.5, 8, 6]} /><meshStandardMaterial color={dk} /></mesh>
+      <mesh position={[1.85, 1.45, 0.25]} rotation={[0, 0, -Math.PI / 5]} castShadow><cylinderGeometry args={[0.07, 0.02, 0.9, 6]} /><meshStandardMaterial color="#fff8e1" /></mesh>
+      <mesh ref={lFL} position={[ 0.6, 0.45,  0.55]} castShadow><cylinderGeometry args={[0.25, 0.2, 1.0, 8]} /><meshStandardMaterial color={g} /></mesh>
+      <mesh ref={lFR} position={[ 0.6, 0.45, -0.55]} castShadow><cylinderGeometry args={[0.25, 0.2, 1.0, 8]} /><meshStandardMaterial color={g} /></mesh>
+      <mesh ref={lBL} position={[-0.6, 0.45,  0.55]} castShadow><cylinderGeometry args={[0.25, 0.2, 1.0, 8]} /><meshStandardMaterial color={g} /></mesh>
+      <mesh ref={lBR} position={[-0.6, 0.45, -0.55]} castShadow><cylinderGeometry args={[0.25, 0.2, 1.0, 8]} /><meshStandardMaterial color={g} /></mesh>
       <mesh><boxGeometry args={[3.2, 3.0, 1.8]} /><meshBasicMaterial color="#ff0000" wireframe transparent opacity={0.5} /></mesh>
     </group>
   )
@@ -483,11 +483,11 @@ function WildBoar({ position, visible, reg }: {
   const br = '#5c3317', dk = '#3d2010'
   return (
     <group ref={gRef} visible={false}>
-      <mesh position={[0, 0.65, 0]}><sphereGeometry args={[0.9, 10, 8]} /><meshStandardMaterial color={br} roughness={0.9} /></mesh>
-      <mesh position={[0.9, 0.75, 0]}><sphereGeometry args={[0.5, 10, 8]} /><meshStandardMaterial color={dk} /></mesh>
-      <mesh position={[1.35, 0.62, 0]} rotation={[0, 0, Math.PI / 2]}><cylinderGeometry args={[0.2, 0.15, 0.35, 8]} /><meshStandardMaterial color="#333" /></mesh>
+      <mesh position={[0, 0.65, 0]} castShadow><sphereGeometry args={[0.9, 10, 8]} /><meshStandardMaterial color={br} roughness={0.9} /></mesh>
+      <mesh position={[0.9, 0.75, 0]} castShadow><sphereGeometry args={[0.5, 10, 8]} /><meshStandardMaterial color={dk} /></mesh>
+      <mesh position={[1.35, 0.62, 0]} rotation={[0, 0, Math.PI / 2]} castShadow><cylinderGeometry args={[0.2, 0.15, 0.35, 8]} /><meshStandardMaterial color="#333" /></mesh>
       {([[0.4,0.2,0.4],[-0.4,0.2,0.4],[0.4,0.2,-0.4],[-0.4,0.2,-0.4]] as [number,number,number][]).map((p, i) => (
-        <mesh key={i} position={p}><cylinderGeometry args={[0.12, 0.1, 0.55, 6]} /><meshStandardMaterial color={br} /></mesh>
+        <mesh key={i} position={p} castShadow><cylinderGeometry args={[0.12, 0.1, 0.55, 6]} /><meshStandardMaterial color={br} /></mesh>
       ))}
       <mesh><boxGeometry args={[2.0, 1.4, 1.2]} /><meshBasicMaterial color="#ff6600" wireframe transparent opacity={0.5} /></mesh>
     </group>
@@ -513,7 +513,7 @@ function BirdUnit({ index, origin, visible }: {
   })
   return (
     <group ref={ref} visible={false}>
-      <mesh><sphereGeometry args={[0.2, 8, 6]} /><meshStandardMaterial color="#333" /></mesh>
+      <mesh castShadow><sphereGeometry args={[0.2, 8, 6]} /><meshStandardMaterial color="#333" /></mesh>
       <mesh position={[0, 0,  0.35]} rotation={[ 0.2, 0,  0.4]}><boxGeometry args={[0.55, 0.06, 0.28]} /><meshStandardMaterial color="#555" /></mesh>
       <mesh position={[0, 0, -0.35]} rotation={[-0.2, 0, -0.4]}><boxGeometry args={[0.55, 0.06, 0.28]} /><meshStandardMaterial color="#555" /></mesh>
     </group>
@@ -612,11 +612,11 @@ function Deer({ position, visible, reg }: {
   const tan = '#c8922a', dk = '#8b6220'
   return (
     <group ref={gRef} visible={false}>
-      <mesh position={[0, 1.0, 0]}><sphereGeometry args={[0.7, 10, 8]} /><meshStandardMaterial color={tan} /></mesh>
-      <mesh position={[0.5, 1.5, 0]} rotation={[0, 0, -0.5]}><cylinderGeometry args={[0.18, 0.22, 0.7, 8]} /><meshStandardMaterial color={tan} /></mesh>
-      <mesh position={[0.9, 1.9, 0]}><sphereGeometry args={[0.32, 10, 8]} /><meshStandardMaterial color={dk} /></mesh>
+      <mesh position={[0, 1.0, 0]} castShadow><sphereGeometry args={[0.7, 10, 8]} /><meshStandardMaterial color={tan} /></mesh>
+      <mesh position={[0.5, 1.5, 0]} rotation={[0, 0, -0.5]} castShadow><cylinderGeometry args={[0.18, 0.22, 0.7, 8]} /><meshStandardMaterial color={tan} /></mesh>
+      <mesh position={[0.9, 1.9, 0]} castShadow><sphereGeometry args={[0.32, 10, 8]} /><meshStandardMaterial color={dk} /></mesh>
       {([[0.35,0.3,0.32],[-0.35,0.3,0.32],[0.35,0.3,-0.32],[-0.35,0.3,-0.32]] as [number,number,number][]).map((p, i) => (
-        <mesh key={i} position={p}><cylinderGeometry args={[0.08, 0.06, 0.7, 6]} /><meshStandardMaterial color={tan} /></mesh>
+        <mesh key={i} position={p} castShadow><cylinderGeometry args={[0.08, 0.06, 0.7, 6]} /><meshStandardMaterial color={tan} /></mesh>
       ))}
       <mesh><boxGeometry args={[1.8, 2.2, 1.0]} /><meshBasicMaterial color="#ffaa00" wireframe transparent opacity={0.45} /></mesh>
     </group>
@@ -706,12 +706,18 @@ function Scene({
 
   return (
     <>
-      {/* SKY DISABLED FOR DEBUG */}
+      <Sky sunPosition={sunPos} turbidity={weather === 'flood' ? 14 : 6} rayleigh={weather === 'flood' ? 3 : 1} />
       <ambientLight
         intensity={weather === 'drought' || weather === 'heatwave' ? 0.85 : 0.5}
         color={weather === 'drought' || weather === 'heatwave' ? '#ffe090' : '#ffffff'}
       />
-      <ambientLight intensity={1} />
+      <directionalLight
+        position={[50, 50, 25]} intensity={1.2} castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-camera-left={-35} shadow-camera-right={35}
+        shadow-camera-top={35}  shadow-camera-bottom={-35}
+        shadow-camera-far={120}
+      />
       <OrbitControls enablePan enableZoom enableRotate maxPolarAngle={Math.PI / 2.05} minDistance={8} maxDistance={90} makeDefault />
 
       <Field weather={weather} />
@@ -749,11 +755,11 @@ function Scene({
       <Rain visible={weather === 'flood'} />
       <DroughtGlow visible={weather === 'drought' || weather === 'heatwave'} />
 
-      {/* DISABLED FOR DEBUG <Elephant  position={threatPos} visible={isElephant} reg={reg} />
-      {/* <WildBoar  position={threatPos} visible={isBoar}     reg={reg} />
-      {/* <BirdFlock position={threatPos} visible={isBird}     reg={reg} />
-      {/* <FireEffect position={threatPos} visible={isFire}    reg={reg} />
-      {/* <Deer      position={threatPos} visible={isDeer}     reg={reg} /> */}
+      <Elephant  position={threatPos} visible={isElephant} reg={reg} />
+      <WildBoar  position={threatPos} visible={isBoar}     reg={reg} />
+      <BirdFlock position={threatPos} visible={isBird}     reg={reg} />
+      <FireEffect position={threatPos} visible={isFire}    reg={reg} />
+      <Deer      position={threatPos} visible={isDeer}     reg={reg} />
 
       <LabelProjector labelsRef={labelsRef} setScreenLabels={setScreenLabels} />
     </>
