@@ -317,9 +317,6 @@ export default function Home() {
                 >
                   <tab.icon className="w-4 h-4" />
                   {tab.label}
-                  {tab.id === 'inject' && (
-                    <span className="ml-1 px-1.5 py-0.5 bg-purple-500/30 text-purple-300 text-xs rounded-full">NEW</span>
-                  )}
                   {tab.id === 'monitor' && threat && (
                     <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
                   )}
