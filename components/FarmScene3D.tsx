@@ -5,12 +5,12 @@
  * - Zero Html from drei. All labels are CSS divs rendered outside Canvas.
  * - Every animated component is ALWAYS in the scene tree; .visible toggled in useFrame.
  * - useFrame always called unconditionally; guards are inside the callback.
- * - Only OrbitControls imported from drei (Sky replaced with custom SimpleSky).
+ * - Only OrbitControls + Sky imported from drei.
  */
 
 import React, { useRef, useMemo, useEffect, useState, useCallback } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls, Sky } from '@react-three/drei'
 import * as THREE from 'three'
 
 export interface ThreatData {
@@ -664,24 +664,6 @@ function DroughtGlow({ visible }: { visible: boolean }) {
   return <pointLight ref={ref} position={[0, 30, 0]} color="#ff9900" intensity={0} distance={90} />
 }
 
-
-// ── Simple Sky (no deprecated drei Sky) ───────────────────────────────────────
-function SimpleSky({ weather }: { weather: string }) {
-  const skyColor = 
-    weather === 'drought' || weather === 'heatwave' ? '#ff9944' :
-    weather === 'flood' ? '#445566' : '#87CEEB'
-  
-  return (
-    <mesh scale={[500, 500, 500]}>
-      <sphereGeometry args={[1, 32, 32]} />
-      <meshBasicMaterial 
-        color={skyColor}
-        side={THREE.BackSide}
-        fog={false}
-      />
-    </mesh>
-  )
-}
 // ── Inner scene ───────────────────────────────────────────────────────────────
 function Scene({
   threat,
@@ -719,9 +701,12 @@ function Scene({
     reg({ id: 'field', text: 'Crop Field 2.5 Acres', color: '#88ff88', bg: 'rgba(0,55,0,0.75)', worldPos: new THREE.Vector3(0, 0.3, -22) })
   }, [reg])
 
+  const sunPos: [number, number, number] =
+    weather === 'drought' || weather === 'heatwave' ? [20, 25, 20] : [100, 20, 100]
+
   return (
     <>
-      <SimpleSky weather={weather} />
+      <Sky sunPosition={sunPos} turbidity={weather === 'flood' ? 14 : 6} rayleigh={weather === 'flood' ? 3 : 1} />
       <ambientLight
         intensity={weather === 'drought' || weather === 'heatwave' ? 0.85 : 0.5}
         color={weather === 'drought' || weather === 'heatwave' ? '#ffe090' : '#ffffff'}
@@ -792,12 +777,7 @@ export default function FarmScene3D({ threat, irrigationActive, weather }: FarmS
         shadows
         camera={{ position: [35, 28, 35], fov: 55 }}
         gl={{ antialias: true, powerPreference: 'high-performance' }}
-        onCreated={({ gl }) => { 
-          gl.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-          // Fix for Three.js r186: explicitly configure shadow map
-          gl.shadowMap.enabled = true
-          gl.shadowMap.type = THREE.PCFShadowMap
-        }}
+        onCreated={({ gl }) => { gl.setPixelRatio(Math.min(window.devicePixelRatio, 2)) }}
       >
         <Scene
           threat={threat}
