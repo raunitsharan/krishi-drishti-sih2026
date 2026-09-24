@@ -5,7 +5,7 @@
  * - Zero Html from drei. All labels are CSS divs rendered outside Canvas.
  * - Every animated component is ALWAYS in the scene tree; .visible toggled in useFrame.
  * - useFrame always called unconditionally; guards are inside the callback.
- * - Only OrbitControls + Sky imported from drei.
+ * - Only OrbitControls imported from drei (Sky replaced with custom SimpleSky).
  */
 
 import React, { useRef, useMemo, useEffect, useState, useCallback } from 'react'
@@ -667,18 +667,15 @@ function DroughtGlow({ visible }: { visible: boolean }) {
 
 // ── Simple Sky (no deprecated drei Sky) ───────────────────────────────────────
 function SimpleSky({ weather }: { weather: string }) {
-  const topColor = 
+  const skyColor = 
     weather === 'drought' || weather === 'heatwave' ? '#ff9944' :
-    weather === 'flood' ? '#334455' : '#87CEEB'
-  const bottomColor =
-    weather === 'drought' || weather === 'heatwave' ? '#ffcc77' :
-    weather === 'flood' ? '#667788' : '#E0F6FF'
+    weather === 'flood' ? '#445566' : '#87CEEB'
   
   return (
     <mesh scale={[500, 500, 500]}>
       <sphereGeometry args={[1, 32, 32]} />
       <meshBasicMaterial 
-        color={topColor}
+        color={skyColor}
         side={THREE.BackSide}
         fog={false}
       />
