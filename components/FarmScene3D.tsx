@@ -791,7 +791,7 @@ export default function FarmScene3D({ threat, irrigationActive, weather }: FarmS
           labelsRef={labelsRef}
           setScreenLabels={setScreenLabels}
         />
-      </Canvas>>
+      </Canvas>
 
       {/* Pure CSS label overlay — zero drei Html, zero crash risk */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
