@@ -777,7 +777,12 @@ export default function FarmScene3D({ threat, irrigationActive, weather }: FarmS
         shadows
         camera={{ position: [35, 28, 35], fov: 55 }}
         gl={{ antialias: true, powerPreference: 'high-performance' }}
-        onCreated={({ gl }) => { gl.setPixelRatio(Math.min(window.devicePixelRatio, 2)) }}
+        onCreated={({ gl }) => { 
+          gl.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+          // Fix for Three.js r186: explicitly configure shadow map
+          gl.shadowMap.enabled = true
+          gl.shadowMap.type = THREE.PCFShadowMap
+        }}
       >
         <Scene
           threat={threat}
