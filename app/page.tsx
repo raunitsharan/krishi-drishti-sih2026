@@ -242,8 +242,12 @@ export default function Home() {
       if (weatherRef.current === 'normal') setSensorData(generateRandomSensorData())
       if (autoRef.current) {
         const t = generateThreatDetection()
-        setThreat(t)
-        if (t) setAlertDismissed(false)
+        setThreat((prev: any) => {
+          // Only update if type actually changed - prevents needless re-renders
+          if (prev?.type === t?.type) return prev
+          if (t) setAlertDismissed(false)
+          return t
+        })
       }
       if (!irrigErrRef.current) setIrrigationData(generateIrrigationData())
     }, 5000)
