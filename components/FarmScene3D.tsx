@@ -755,11 +755,11 @@ function Scene({
       <Rain visible={weather === 'flood'} />
       <DroughtGlow visible={weather === 'drought' || weather === 'heatwave'} />
 
-      <Elephant  position={threatPos} visible={isElephant} reg={reg} />
-      <WildBoar  position={threatPos} visible={isBoar}     reg={reg} />
-      <BirdFlock position={threatPos} visible={isBird}     reg={reg} />
-      <FireEffect position={threatPos} visible={isFire}    reg={reg} />
-      <Deer      position={threatPos} visible={isDeer}     reg={reg} />
+      {/* DISABLED FOR DEBUG <Elephant  position={threatPos} visible={isElephant} reg={reg} />
+      {/* <WildBoar  position={threatPos} visible={isBoar}     reg={reg} />
+      {/* <BirdFlock position={threatPos} visible={isBird}     reg={reg} />
+      {/* <FireEffect position={threatPos} visible={isFire}    reg={reg} />
+      {/* <Deer      position={threatPos} visible={isDeer}     reg={reg} /> */}
 
       <LabelProjector labelsRef={labelsRef} setScreenLabels={setScreenLabels} />
     </>
