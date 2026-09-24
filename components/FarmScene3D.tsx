@@ -774,13 +774,10 @@ export default function FarmScene3D({ threat, irrigationActive, weather }: FarmS
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <Canvas
+        shadows
         camera={{ position: [35, 28, 35], fov: 55 }}
         gl={{ antialias: true, powerPreference: 'high-performance' }}
-        onCreated={({ gl }) => { 
-          gl.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-          gl.shadowMap.enabled = true
-          gl.shadowMap.type = THREE.PCFShadowMap
-        }}
+        onCreated={({ gl }) => { gl.setPixelRatio(Math.min(window.devicePixelRatio, 2)) }}
       >
         <Scene
           threat={threat}
