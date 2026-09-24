@@ -10,7 +10,7 @@
 
 import React, { useRef, useMemo, useEffect, useState, useCallback } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, Sky } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 
 export interface ThreatData {
@@ -664,6 +664,27 @@ function DroughtGlow({ visible }: { visible: boolean }) {
   return <pointLight ref={ref} position={[0, 30, 0]} color="#ff9900" intensity={0} distance={90} />
 }
 
+
+// ── Simple Sky (no deprecated drei Sky) ───────────────────────────────────────
+function SimpleSky({ weather }: { weather: string }) {
+  const topColor = 
+    weather === 'drought' || weather === 'heatwave' ? '#ff9944' :
+    weather === 'flood' ? '#334455' : '#87CEEB'
+  const bottomColor =
+    weather === 'drought' || weather === 'heatwave' ? '#ffcc77' :
+    weather === 'flood' ? '#667788' : '#E0F6FF'
+  
+  return (
+    <mesh scale={[500, 500, 500]}>
+      <sphereGeometry args={[1, 32, 32]} />
+      <meshBasicMaterial 
+        color={topColor}
+        side={THREE.BackSide}
+        fog={false}
+      />
+    </mesh>
+  )
+}
 // ── Inner scene ───────────────────────────────────────────────────────────────
 function Scene({
   threat,
@@ -701,12 +722,9 @@ function Scene({
     reg({ id: 'field', text: 'Crop Field 2.5 Acres', color: '#88ff88', bg: 'rgba(0,55,0,0.75)', worldPos: new THREE.Vector3(0, 0.3, -22) })
   }, [reg])
 
-  const sunPos: [number, number, number] =
-    weather === 'drought' || weather === 'heatwave' ? [20, 25, 20] : [100, 20, 100]
-
   return (
     <>
-      <Sky sunPosition={sunPos} turbidity={weather === 'flood' ? 14 : 6} rayleigh={weather === 'flood' ? 3 : 1} />
+      <SimpleSky weather={weather} />
       <ambientLight
         intensity={weather === 'drought' || weather === 'heatwave' ? 0.85 : 0.5}
         color={weather === 'drought' || weather === 'heatwave' ? '#ffe090' : '#ffffff'}
