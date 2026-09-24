@@ -1,150 +1,214 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { Bug, Flame, Bird, AlertTriangle, Droplets, Wind } from 'lucide-react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Zap, CheckCircle } from 'lucide-react'
 
-interface ProblemInjectorProps {
+interface Props {
   onInjectThreat: (type: string) => void
   onInjectWeather: (condition: string) => void
   onInjectIrrigationIssue: () => void
 }
 
-export default function ProblemInjector({ 
-  onInjectThreat, 
-  onInjectWeather,
-  onInjectIrrigationIssue 
-}: ProblemInjectorProps) {
-  const threats = [
-    { type: 'elephant', label: '🐘 Elephant', color: 'from-red-500 to-orange-500', icon: AlertTriangle },
-    { type: 'wild_boar', label: '🐗 Wild Boar', color: 'from-orange-500 to-red-500', icon: AlertTriangle },
-    { type: 'bird', label: '🦅 Bird Flock', color: 'from-yellow-500 to-amber-500', icon: Bird },
-    { type: 'fire', label: '🔥 Fire', color: 'from-red-600 to-orange-600', icon: Flame },
-    { type: 'deer', label: '🦌 Deer', color: 'from-amber-500 to-yellow-500', icon: AlertTriangle },
-  ]
+interface FeedItem {
+  id: number
+  icon: string
+  msg: string
+}
 
-  const weatherProblems = [
-    { type: 'drought', label: '☀️ Drought', icon: Wind },
-    { type: 'flood', label: '🌊 Heavy Rain', icon: Droplets },
-    { type: 'heatwave', label: '🌡️ Heatwave', icon: Flame },
-  ]
+const THREATS = [
+  { type: 'elephant',  emoji: '🐘', label: 'Elephant',    desc: 'Simulate elephant intrusion into crop field',    color: 'bg-red-500/10 border-red-500/40 hover:bg-red-500/20',    badge: 'bg-red-500',    text: 'text-red-300' },
+  { type: 'wild_boar', emoji: '🐗', label: 'Wild Boar',   desc: 'Wild boar entering and damaging crops',          color: 'bg-orange-500/10 border-orange-500/40 hover:bg-orange-500/20', badge: 'bg-orange-500', text: 'text-orange-300' },
+  { type: 'bird',      emoji: '🦅', label: 'Bird Flock',  desc: 'Flock of birds attacking grain crops',           color: 'bg-yellow-500/10 border-yellow-500/40 hover:bg-yellow-500/20', badge: 'bg-yellow-500', text: 'text-yellow-300' },
+  { type: 'fire',      emoji: '🔥', label: 'Fire',        desc: 'Fire outbreak in field — emergency protocol',    color: 'bg-red-700/10 border-red-600/40 hover:bg-red-700/20',    badge: 'bg-red-600',    text: 'text-red-200' },
+  { type: 'deer',      emoji: '🦌', label: 'Deer',        desc: 'Deer grazing and trampling crop rows',           color: 'bg-amber-500/10 border-amber-500/40 hover:bg-amber-500/20', badge: 'bg-amber-500',  text: 'text-amber-300' },
+]
+
+const WEATHER = [
+  { type: 'drought',  emoji: '☀️',  label: 'Drought',    desc: 'Low moisture, high temp — irrigation critical',  color: 'bg-amber-500/10 border-amber-500/40 hover:bg-amber-500/20',  text: 'text-amber-300' },
+  { type: 'flood',    emoji: '🌊',  label: 'Heavy Rain', desc: 'Soil saturation, flood risk — drainage alert',   color: 'bg-blue-500/10 border-blue-500/40 hover:bg-blue-500/20',     text: 'text-blue-300' },
+  { type: 'heatwave', emoji: '🌡️', label: 'Heatwave',   desc: 'Extreme temp — crop stress and wilting risk',    color: 'bg-red-500/10 border-red-500/40 hover:bg-red-500/20',        text: 'text-red-300' },
+  { type: 'normal',   emoji: '🌤️', label: 'Reset',      desc: 'Return to normal weather conditions',            color: 'bg-green-500/10 border-green-500/40 hover:bg-green-500/20',  text: 'text-green-300' },
+]
+
+const SYSTEM = [
+  { type: 'irrigation', emoji: '💧', label: 'Irrigation Failure', desc: 'Valve stuck — flow drops to zero for 8 s',   color: 'bg-cyan-500/10 border-cyan-500/40 hover:bg-cyan-500/20',   text: 'text-cyan-300' },
+  { type: 'clear',      emoji: '✅', label: 'Clear All Threats',  desc: 'Dismiss active threat, resume auto-detection', color: 'bg-green-500/10 border-green-500/40 hover:bg-green-500/20', text: 'text-green-300' },
+]
+
+let _id = 0
+const nextId = () => ++_id
+
+export default function ProblemInjector({ onInjectThreat, onInjectWeather, onInjectIrrigationIssue }: Props) {
+  const [feed, setFeed] = useState<FeedItem[]>([])
+  const [lastInjected, setLastInjected] = useState<string | null>(null)
+
+  const push = (icon: string, msg: string) => {
+    const item = { id: nextId(), icon, msg }
+    setFeed(prev => [item, ...prev].slice(0, 6))
+  }
+
+  const doThreat = (t: typeof THREATS[0]) => {
+    onInjectThreat(t.type)
+    push(t.emoji, `${t.label} detected — AI alert triggered, deterrent activated`)
+    setLastInjected(t.type)
+  }
+
+  const doWeather = (w: typeof WEATHER[0]) => {
+    onInjectWeather(w.type)
+    push(w.emoji, w.type === 'normal' ? 'Weather reset to normal conditions' : `${w.label} simulated — sensors updated`)
+    setLastInjected(w.type)
+  }
+
+  const doSystem = (s: typeof SYSTEM[0]) => {
+    if (s.type === 'irrigation') {
+      onInjectIrrigationIssue()
+      push(s.emoji, 'Irrigation failure — valve stuck, auto-recovery in 8 s')
+    } else {
+      onInjectThreat('clear')
+      push(s.emoji, 'All threats cleared — auto-detection resumed')
+    }
+    setLastInjected(s.type)
+  }
+
+  const Section = ({ title, color }: { title: string; color: string }) => (
+    <div className={`flex items-center gap-2 mb-3`}>
+      <div className={`h-px flex-1 bg-gradient-to-r ${color}`} />
+      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest px-2">{title}</span>
+      <div className={`h-px flex-1 bg-gradient-to-l ${color}`} />
+    </div>
+  )
+
+  const Card = ({
+    emoji, label, desc, color, text, badge, onClick,
+  }: {
+    emoji: string; label: string; desc: string
+    color: string; text: string; badge?: string; onClick: () => void
+  }) => (
+    <motion.button
+      whileHover={{ scale: 1.02, y: -2 }}
+      whileTap={{ scale: 0.97 }}
+      onClick={onClick}
+      className={`w-full text-left p-4 rounded-xl border transition-all duration-200 ${color} group`}
+    >
+      <div className="flex items-start gap-3">
+        <span className="text-2xl leading-none mt-0.5 group-hover:scale-110 transition-transform inline-block">
+          {emoji}
+        </span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className={`font-bold text-sm ${text}`}>{label}</span>
+            {badge && (
+              <span className={`px-1.5 py-0.5 rounded text-white text-xs font-bold ${badge}`}>INJECT</span>
+            )}
+          </div>
+          <p className="text-gray-400 text-xs leading-snug">{desc}</p>
+        </div>
+        <Zap className={`w-4 h-4 flex-shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity ${text}`} />
+      </div>
+    </motion.button>
+  )
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30"
-    >
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500">
-          <Bug className="w-6 h-6 text-white" />
+    <div className="space-y-6">
+      {/* Instruction banner */}
+      <div className="bg-purple-500/10 border border-purple-500/30 rounded-2xl p-4 flex items-start gap-3">
+        <div className="p-2 rounded-lg bg-purple-500/20 flex-shrink-0">
+          <Zap className="w-5 h-5 text-purple-400" />
         </div>
         <div>
-          <h3 className="text-xl font-bold text-white">Problem Injection Panel</h3>
-          <p className="text-sm text-gray-400">Simulate real-world agricultural challenges</p>
+          <p className="text-white font-semibold mb-0.5">How it works</p>
+          <p className="text-gray-300 text-sm">
+            Click any button below — the app instantly jumps to <strong className="text-white">Live Monitor</strong>,
+            shows the animated 3D model in the field (elephant walking, fire burning, birds flying…),
+            fires an overlay alert with confidence score, and activates the deterrent system.
+          </p>
         </div>
       </div>
 
-      {/* Threat Injection */}
-      <div className="mb-6">
-        <h4 className="text-sm font-semibold text-purple-300 mb-3 flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4" />
-          Inject Threat Detection
-        </h4>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {threats.map((threat) => (
-            <motion.button
-              key={threat.type}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => onInjectThreat(threat.type)}
-              className={`p-4 rounded-xl bg-gradient-to-br ${threat.color} text-white font-semibold text-sm hover:shadow-lg transition-shadow`}
-            >
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <threat.icon className="w-5 h-5" />
-              </div>
-              {threat.label}
-            </motion.button>
-          ))}
-          
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onInjectThreat('clear')}
-            className="p-4 rounded-xl bg-gradient-to-br from-gray-600 to-gray-700 text-white font-semibold text-sm hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center justify-center gap-2 mb-2">
-              ✓
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* ── Threat column ── */}
+        <div className="lg:col-span-2 bg-gray-900/60 backdrop-blur-sm rounded-2xl p-5 border border-gray-700/50">
+          <Section title="Animal & Fire Threats" color="from-transparent via-red-500/40 to-transparent" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {THREATS.map(t => (
+              <Card key={t.type} {...t} badge={t.badge} onClick={() => doThreat(t)} />
+            ))}
+          </div>
+
+          <div className="mt-5">
+            <Section title="Weather Conditions" color="from-transparent via-blue-500/40 to-transparent" />
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {WEATHER.map(w => (
+                <Card key={w.type} {...w} onClick={() => doWeather(w)} />
+              ))}
             </div>
-            Clear All
-          </motion.button>
+          </div>
+
+          <div className="mt-5">
+            <Section title="System Issues" color="from-transparent via-cyan-500/40 to-transparent" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {SYSTEM.map(s => (
+                <Card key={s.type} {...s} onClick={() => doSystem(s)} />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ── Feed column ── */}
+        <div className="bg-gray-900/60 backdrop-blur-sm rounded-2xl p-5 border border-gray-700/50 flex flex-col">
+          <h3 className="text-white font-bold mb-3 flex items-center gap-2">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            Injection Feed
+          </h3>
+
+          <div className="flex-1 space-y-2 min-h-[200px]">
+            <AnimatePresence>
+              {feed.length === 0 ? (
+                <motion.p key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-gray-500 text-sm text-center mt-8">
+                  No injections yet.<br />Click a button to start.
+                </motion.p>
+              ) : (
+                feed.map(item => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="flex items-start gap-2 bg-black/30 rounded-lg px-3 py-2.5 border border-gray-700/30"
+                  >
+                    <span className="text-lg leading-none flex-shrink-0">{item.icon}</span>
+                    <p className="text-gray-300 text-xs leading-snug">{item.msg}</p>
+                    <CheckCircle className="w-3.5 h-3.5 text-green-400 flex-shrink-0 mt-0.5" />
+                  </motion.div>
+                ))
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* What happens section */}
+          <div className="mt-4 pt-4 border-t border-gray-700/40">
+            <p className="text-xs font-semibold text-gray-400 mb-2">What happens on inject?</p>
+            <ul className="space-y-1.5">
+              {[
+                { icon: '🎥', text: 'Camera detection beam activates' },
+                { icon: '🔍', text: 'AI scan sweep starts on field' },
+                { icon: '🐘', text: 'Animated 3D model appears in field' },
+                { icon: '📦', text: 'Bounding box drawn around threat' },
+                { icon: '🏷️', text: 'Label annotation shows on model' },
+                { icon: '🚨', text: 'Alert banner with pipeline steps' },
+                { icon: '🔊', text: 'Deterrent speaker pulses (non-fire)' },
+                { icon: '📱', text: 'Telegram alert logged in feed' },
+              ].map(i => (
+                <li key={i.text} className="flex items-center gap-2 text-xs text-gray-400">
+                  <span>{i.icon}</span>
+                  <span>{i.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
-
-      {/* Weather Problems */}
-      <div className="mb-6">
-        <h4 className="text-sm font-semibold text-blue-300 mb-3 flex items-center gap-2">
-          <Wind className="w-4 h-4" />
-          Inject Weather Condition
-        </h4>
-        <div className="grid grid-cols-3 gap-3">
-          {weatherProblems.map((weather) => (
-            <motion.button
-              key={weather.type}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => onInjectWeather(weather.type)}
-              className="p-4 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white font-semibold text-sm hover:shadow-lg transition-shadow"
-            >
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <weather.icon className="w-5 h-5" />
-              </div>
-              {weather.label}
-            </motion.button>
-          ))}
-        </div>
-      </div>
-
-      {/* Other Issues */}
-      <div>
-        <h4 className="text-sm font-semibold text-green-300 mb-3 flex items-center gap-2">
-          <Droplets className="w-4 h-4" />
-          Inject System Issues
-        </h4>
-        <div className="grid grid-cols-2 gap-3">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onInjectIrrigationIssue}
-            className="p-4 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-white font-semibold text-sm hover:shadow-lg transition-shadow"
-          >
-            💧 Irrigation Failure
-          </motion.button>
-          
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onInjectWeather('normal')}
-            className="p-4 rounded-xl bg-gradient-to-br from-gray-600 to-gray-700 text-white font-semibold text-sm hover:shadow-lg transition-shadow"
-          >
-            ✓ Reset Weather
-          </motion.button>
-        </div>
-      </div>
-
-      {/* Info Box */}
-      <div className="mt-6 bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
-        <h4 className="text-blue-300 font-semibold mb-2 flex items-center gap-2 text-sm">
-          <span className="text-lg">ℹ️</span>
-          How to Use
-        </h4>
-        <ul className="text-gray-300 text-sm space-y-1">
-          <li>• Click any button to simulate that problem</li>
-          <li>• Watch the 3D view update with indicators</li>
-          <li>• See alerts appear in real-time</li>
-          <li>• Check system responses and recommendations</li>
-          <li>• Use "Clear All" or "Reset" to return to normal</li>
-        </ul>
-      </div>
-    </motion.div>
+    </div>
   )
 }
