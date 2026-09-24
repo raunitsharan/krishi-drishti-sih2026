@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -33,14 +33,14 @@ const FarmScene3D = dynamic(() => import('@/components/FarmScene3D'), {
   ),
 })
 
-// â”€â”€ Animated alert banner that floats above the 3D canvas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Animated alert banner that floats above the 3D canvas ────────────────────
 function AlertBanner({ threat, onDismiss }: { threat: any; onDismiss: () => void }) {
   const meta: Record<string, { emoji: string; label: string; color: string; border: string; action: string }> = {
-    elephant:  { emoji: 'ðŸ˜', label: 'ELEPHANT INTRUSION',  color: 'from-red-600 to-orange-600',    border: 'border-red-500',    action: 'Strobing lights + Ultrasonic deterrent activated. Farmer alerted via Telegram.' },
-    wild_boar: { emoji: 'ðŸ—', label: 'WILD BOAR DETECTED',  color: 'from-orange-600 to-amber-600',  border: 'border-orange-500', action: 'Ultrasonic repeller ON. Node CAM-01 tracking movement. Alert sent.' },
-    bird:      { emoji: 'ðŸ¦…', label: 'BIRD FLOCK DETECTED', color: 'from-yellow-500 to-amber-500',  border: 'border-yellow-400', action: 'High-frequency sound emitter active. Monitoring flock trajectory.' },
-    fire:      { emoji: 'ðŸ”¥', label: 'ðŸš¨ FIRE EMERGENCY',   color: 'from-red-700 to-red-500',       border: 'border-red-400',    action: 'EMERGENCY ALERT sent! Fire suppression protocol active. Nearest station notified.' },
-    deer:      { emoji: 'ðŸ¦Œ', label: 'DEER DETECTED',       color: 'from-amber-600 to-yellow-600',  border: 'border-amber-400',  action: 'Perimeter lights activated. Deterrent speaker ON. Farmer notified.' },
+    elephant:  { emoji: '🐘', label: 'ELEPHANT INTRUSION',  color: 'from-red-600 to-orange-600',    border: 'border-red-500',    action: 'Strobing lights + Ultrasonic deterrent activated. Farmer alerted via Telegram.' },
+    wild_boar: { emoji: '🐗', label: 'WILD BOAR DETECTED',  color: 'from-orange-600 to-amber-600',  border: 'border-orange-500', action: 'Ultrasonic repeller ON. Node CAM-01 tracking movement. Alert sent.' },
+    bird:      { emoji: '🦅', label: 'BIRD FLOCK DETECTED', color: 'from-yellow-500 to-amber-500',  border: 'border-yellow-400', action: 'High-frequency sound emitter active. Monitoring flock trajectory.' },
+    fire:      { emoji: '🔥', label: '🚨 FIRE EMERGENCY',   color: 'from-red-700 to-red-500',       border: 'border-red-400',    action: 'EMERGENCY ALERT sent! Fire suppression protocol active. Nearest station notified.' },
+    deer:      { emoji: '🦌', label: 'DEER DETECTED',       color: 'from-amber-600 to-yellow-600',  border: 'border-amber-400',  action: 'Perimeter lights activated. Deterrent speaker ON. Farmer notified.' },
   }
   const m = meta[threat?.type] ?? meta['deer']
 
@@ -81,13 +81,13 @@ function AlertBanner({ threat, onDismiss }: { threat: any; onDismiss: () => void
             {/* Detail row */}
             <div className="flex flex-wrap gap-3 text-sm mb-2">
               <span className="text-gray-300">
-                ðŸ“ <span className="font-mono text-white">X:{threat.location.x}m Â· Y:{threat.location.y}m</span>
+                📍 <span className="font-mono text-white">X:{threat.location.x}m · Y:{threat.location.y}m</span>
               </span>
               <span className="text-gray-300">
-                ðŸŽ¯ Confidence: <span className="text-green-400 font-bold">{(parseFloat(threat.confidence) * 100).toFixed(1)}%</span>
+                🎯 Confidence: <span className="text-green-400 font-bold">{(parseFloat(threat.confidence) * 100).toFixed(1)}%</span>
               </span>
               <span className="text-gray-400 text-xs">
-                ðŸ• {new Date(threat.timestamp).toLocaleTimeString()}
+                🕐 {new Date(threat.timestamp).toLocaleTimeString()}
               </span>
             </div>
 
@@ -122,7 +122,7 @@ function AlertBanner({ threat, onDismiss }: { threat: any; onDismiss: () => void
                   ? 'bg-gray-600 text-gray-400'
                   : 'bg-green-500 text-white'
               }`}>
-                {threat.type === 'fire' && i === 3 ? 'â€”' : 'âœ“'}
+                {threat.type === 'fire' && i === 3 ? '—' : '✓'}
               </div>
               <span className="text-xs text-gray-400 text-center leading-tight">{step}</span>
             </motion.div>
@@ -133,13 +133,13 @@ function AlertBanner({ threat, onDismiss }: { threat: any; onDismiss: () => void
   )
 }
 
-// â”€â”€ Weather banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Weather banner ────────────────────────────────────────────────────────────
 function WeatherBanner({ weather }: { weather: string }) {
   if (weather === 'normal') return null
   const meta: Record<string, { emoji: string; label: string; color: string; tip: string }> = {
-    drought:  { emoji: 'â˜€ï¸', label: 'DROUGHT CONDITIONS', color: 'from-amber-600/30 to-orange-600/30 border-amber-500/50', tip: 'Soil moisture critical â€” smart irrigation activated.' },
-    flood:    { emoji: 'ðŸŒŠ', label: 'HEAVY RAIN / FLOOD RISK', color: 'from-blue-600/30 to-cyan-600/30 border-blue-500/50', tip: 'Drainage channels monitored. Over-watering protection engaged.' },
-    heatwave: { emoji: 'ðŸŒ¡ï¸', label: 'EXTREME HEATWAVE', color: 'from-red-600/30 to-orange-600/30 border-red-500/50', tip: 'Crop stress risk high â€” shading and irrigation recommended.' },
+    drought:  { emoji: '☀️', label: 'DROUGHT CONDITIONS', color: 'from-amber-600/30 to-orange-600/30 border-amber-500/50', tip: 'Soil moisture critical — smart irrigation activated.' },
+    flood:    { emoji: '🌊', label: 'HEAVY RAIN / FLOOD RISK', color: 'from-blue-600/30 to-cyan-600/30 border-blue-500/50', tip: 'Drainage channels monitored. Over-watering protection engaged.' },
+    heatwave: { emoji: '🌡️', label: 'EXTREME HEATWAVE', color: 'from-red-600/30 to-orange-600/30 border-red-500/50', tip: 'Crop stress risk high — shading and irrigation recommended.' },
   }
   const m = meta[weather]
   if (!m) return null
@@ -178,7 +178,7 @@ export default function Home() {
   useEffect(() => { weatherRef.current  = weather },    [weather])
   useEffect(() => { autoRef.current     = autoThreats }, [autoThreats])
 
-  // â”€â”€ Threat injection (used by ProblemInjector) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Threat injection (used by ProblemInjector) ────────────────────────────
   const injectThreat = useCallback((type: string) => {
     if (type === 'clear') {
       setThreat(null)
@@ -200,7 +200,7 @@ export default function Home() {
     setActiveTab('monitor')          // always jump to monitor on injection
   }, [])
 
-  // â”€â”€ Weather injection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Weather injection ─────────────────────────────────────────────────────
   const injectWeather = useCallback((condition: string) => {
     setWeather(condition)
     setSensorData(prev => {
@@ -225,7 +225,7 @@ export default function Home() {
     setActiveTab('monitor')
   }, [])
 
-  // â”€â”€ Irrigation failure injection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Irrigation failure injection ──────────────────────────────────────────
   const injectIrrigationIssue = useCallback(() => {
     irrigErrRef.current = true
     setIrrigationData(prev => ({ ...prev, status: 'error', waterFlow: '0', pressure: '0.0', valveStatus: 'stuck' }))
@@ -236,7 +236,7 @@ export default function Home() {
     }, 8000)
   }, [])
 
-  // â”€â”€ Auto simulation (avoids stale closure via refs) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Auto simulation (avoids stale closure via refs) ───────────────────────
   useEffect(() => {
     const id = setInterval(() => {
       if (weatherRef.current === 'normal') setSensorData(generateRandomSensorData())
@@ -248,7 +248,7 @@ export default function Home() {
       if (!irrigErrRef.current) setIrrigationData(generateIrrigationData())
     }, 5000)
     return () => clearInterval(id)
-  }, [])   // empty deps â€” safe because we use refs
+  }, [])   // empty deps — safe because we use refs
 
   const toggleIrrigation = () => {
     setIrrigationActive(v => {
@@ -270,7 +270,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-green-950/20 to-blue-950/20">
-      {/* â”€â”€ Header â”€â”€ */}
+      {/* ── Header ── */}
       <header className="border-b border-gray-700/50 bg-gray-900/90 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
@@ -281,7 +281,7 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-white leading-none">Krishi Drishti</h1>
-                <p className="text-xs text-gray-400 mt-0.5">AI-Powered Precision Agriculture Â· SIH 2026</p>
+                <p className="text-xs text-gray-400 mt-0.5">AI-Powered Precision Agriculture · SIH 2026</p>
               </div>
             </div>
 
@@ -297,7 +297,7 @@ export default function Home() {
                 >
                   <motion.div className="w-2 h-2 bg-red-400 rounded-full" animate={{ scale: [1,1.4,1] }} transition={{ duration: 0.7, repeat: Infinity }} />
                   <span className="text-red-300 text-xs font-semibold uppercase tracking-wide">
-                    âš  {threat.type.replace('_',' ')} alert
+                    ⚠ {threat.type.replace('_',' ')} alert
                   </span>
                 </motion.div>
               )}
@@ -363,12 +363,98 @@ export default function Home() {
         </div>
       </header>
 
-      {/* â”€â”€ Main â”€â”€ */}
+      {/* ── Main ── */}
       <main className="container mx-auto px-4 py-6">
+
+        {/* ── 3D canvas: ALWAYS mounted to preserve WebGL context ── */}
+        <div style={{ display: activeTab === 'monitor' ? 'block' : 'none' }} className="space-y-6 mb-6">
+          {/* 3D canvas card */}
+          <div className="bg-gray-900/60 backdrop-blur-sm rounded-2xl p-5 border border-gray-700/50">
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <Camera className="w-5 h-5 text-green-400" />
+                3D Farm Live View
+              </h2>
+              <div className="flex flex-wrap gap-2 text-xs">
+                {[
+                  { label: '4 Cameras', color: 'green' },
+                  { label: '5 Sensors', color: 'blue' },
+                  { label: '4 Sprinklers', color: 'cyan' },
+                  { label: weather !== 'normal' ? `⚠ ${weather}` : '☀ Normal', color: weather !== 'normal' ? 'amber' : 'gray' },
+                ].map(b => (
+                  <span key={b.label} className={`px-2 py-1 rounded-full bg-${b.color}-500/10 border border-${b.color}-500/30 text-${b.color}-300`}>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Canvas wrapper */}
+            <div className="relative h-[520px] rounded-xl overflow-hidden border border-gray-700/60">
+              <FarmScene3D
+                threat={threat}
+                irrigationActive={irrigationActive}
+                weather={weather}
+              />
+
+              <AnimatePresence>
+                {showAlert && (
+                  <AlertBanner threat={threat} onDismiss={() => setAlertDismissed(true)} />
+                )}
+              </AnimatePresence>
+
+              <AnimatePresence>
+                {weather !== 'normal' && (
+                  <WeatherBanner weather={weather} />
+                )}
+              </AnimatePresence>
+
+              <AnimatePresence>
+                {!threat && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-green-500/20 border border-green-500/40 rounded-full backdrop-blur-sm"
+                  >
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    <span className="text-green-300 text-xs font-semibold">All Clear — AI Monitoring Active</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Stats row */}
+            <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { label: 'Active Cameras', value: '4/4', color: 'green' },
+                { label: 'Sensors Online', value: '5/5', color: 'blue' },
+                { label: 'Field Coverage', value: '100%', color: 'purple' },
+                { label: 'Threat Status', value: threat ? '⚠ Alert' : '✓ Clear', color: threat ? 'red' : 'green' },
+              ].map(s => (
+                <div key={s.label} className="bg-black/30 rounded-xl p-3 text-center border border-gray-700/30">
+                  <p className="text-gray-400 text-xs mb-1">{s.label}</p>
+                  <p className={`text-xl font-bold text-${s.color}-400`}>{s.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <AnimatePresence mode="wait">
 
-          {/* â”€â”€ MONITOR TAB â”€â”€ */}
-          {/* â”€â”€ SENSORS TAB â”€â”€ */}
+          {/* ── MONITOR TAB ── */}
+          {activeTab === 'monitor' && (
+            <motion.div key="monitor"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+              className="space-y-6"
+            >
+              <ThreatDetection threat={threat} />
+              <AlertSystem threat={threat} />
+            </motion.div>
+          )}
+
+          {/* ── SENSORS TAB ── */}
           {activeTab === 'sensors' && (
             <motion.div key="sensors"
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
@@ -376,14 +462,14 @@ export default function Home() {
             >
               <div>
                 <h2 className="text-2xl font-bold text-white mb-1">Real-time Sensor Data</h2>
-                <p className="text-gray-400">Live readings from field nodes Â· auto-updates every 5 s</p>
+                <p className="text-gray-400">Live readings from field nodes · auto-updates every 5 s</p>
               </div>
               <SensorDashboard data={sensorData} />
               <IrrigationControl data={irrigationData} onToggle={toggleIrrigation} />
             </motion.div>
           )}
 
-          {/* â”€â”€ CROPS TAB â”€â”€ */}
+          {/* ── CROPS TAB ── */}
           {activeTab === 'crops' && (
             <motion.div key="crops"
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
@@ -400,7 +486,7 @@ export default function Home() {
             </motion.div>
           )}
 
-          {/* â”€â”€ ANALYTICS TAB â”€â”€ */}
+          {/* ── ANALYTICS TAB ── */}
           {activeTab === 'analytics' && (
             <motion.div key="analytics"
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
@@ -414,7 +500,7 @@ export default function Home() {
             </motion.div>
           )}
 
-          {/* â”€â”€ PROBLEM INJECT TAB â”€â”€ */}
+          {/* ── PROBLEM INJECT TAB ── */}
           {activeTab === 'inject' && (
             <motion.div key="inject"
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
@@ -423,7 +509,7 @@ export default function Home() {
               <div>
                 <h2 className="text-2xl font-bold text-white mb-1">Problem Injection Panel</h2>
                 <p className="text-gray-400">
-                  Manually trigger any farm scenario â€” the system jumps to Live Monitor and shows the full 3D response.
+                  Manually trigger any farm scenario — the system jumps to Live Monitor and shows the full 3D response.
                 </p>
               </div>
 
@@ -438,7 +524,7 @@ export default function Home() {
                 <div className="bg-gray-900/60 rounded-2xl p-5 border border-gray-700/50 space-y-3">
                   <h3 className="text-white font-bold">Current System State</h3>
                   {[
-                    { label: 'Active Threat',    value: threat ? `âš  ${threat.type.replace('_',' ')}` : 'âœ“ None', ok: !threat },
+                    { label: 'Active Threat',    value: threat ? `⚠ ${threat.type.replace('_',' ')}` : '✓ None', ok: !threat },
                     { label: 'Weather',          value: weather,          ok: weather === 'normal' },
                     { label: 'Irrigation',       value: irrigationData.status, ok: irrigationData.status !== 'error' },
                     { label: 'Auto-detection',   value: autoThreats ? 'Enabled' : 'Manual', ok: true },
@@ -454,7 +540,7 @@ export default function Home() {
                   <h3 className="text-white font-bold">Live Sensor Snapshot</h3>
                   {[
                     { label: 'Soil Moisture',  value: `${sensorData.soilMoisture}%`,   color: 'text-blue-400' },
-                    { label: 'Temperature',    value: `${sensorData.temperature}Â°C`,   color: 'text-orange-400' },
+                    { label: 'Temperature',    value: `${sensorData.temperature}°C`,   color: 'text-orange-400' },
                     { label: 'Humidity',       value: `${sensorData.humidity}%`,       color: 'text-cyan-400' },
                     { label: 'Soil pH',        value: sensorData.pH,                   color: 'text-purple-400' },
                   ].map(r => (
@@ -471,13 +557,13 @@ export default function Home() {
         </AnimatePresence>
       </main>
 
-      {/* â”€â”€ Footer â”€â”€ */}
+      {/* ── Footer ── */}
       <footer className="border-t border-gray-700/40 bg-gray-900/80 backdrop-blur-xl mt-12">
         <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-gray-400">
-          <p><span className="text-white font-semibold">Smart India Hackathon 2026</span> Â· Problem ID: 26210 Â· Team Krishi Drishti</p>
+          <p><span className="text-white font-semibold">Smart India Hackathon 2026</span> · Problem ID: 26210 · Team Krishi Drishti</p>
           <div className="flex gap-4">
-            <a href="https://github.com/raunitsharan/krishi-drishti-sih2026" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">GitHub â†—</a>
-            <span>Agriculture Â· FoodTech Â· Rural Dev</span>
+            <a href="https://github.com/raunitsharan/krishi-drishti-sih2026" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">GitHub ↗</a>
+            <span>Agriculture · FoodTech · Rural Dev</span>
           </div>
         </div>
       </footer>
