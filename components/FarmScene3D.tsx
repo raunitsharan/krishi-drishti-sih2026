@@ -706,7 +706,7 @@ function Scene({
 
   return (
     <>
-      <Sky sunPosition={sunPos} turbidity={weather === 'flood' ? 14 : 6} rayleigh={weather === 'flood' ? 3 : 1} />
+      {/* SKY DISABLED FOR DEBUG */}
       <ambientLight
         intensity={weather === 'drought' || weather === 'heatwave' ? 0.85 : 0.5}
         color={weather === 'drought' || weather === 'heatwave' ? '#ffe090' : '#ffffff'}
